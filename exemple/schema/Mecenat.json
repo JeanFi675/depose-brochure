@@ -1,0 +1,10 @@
+[
+    {
+        "Titre": "Suivi - Mécénat",
+        "Link_Annonceur": "1 (ID Annonceur)",
+        "Cerfa_Envoye": false,
+        "Type_Paiement": "Chèque",
+        "Email_Contact": "contact@exemple.com",
+        "Commentaires": "Exemple de commentaire"
+    }
+]

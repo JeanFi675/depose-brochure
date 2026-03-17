@@ -1,0 +1,13 @@
+[
+    {
+        "Titre": "Suivi - Encart Pub",
+        "Link_Annonceur": "1 (ID Annonceur)",
+        "Visuel_Envoye": false,
+        "Format_Pub": "A4 Portrait",
+        "Type_Paiement": "Virement",
+        "Email_Contact": "contact@exemple.com",
+        "Type_Preuve": "Facture",
+        "Preuve_Paiement_Transmise": false,
+        "Commentaires": "Exemple de commentaire"
+    }
+]

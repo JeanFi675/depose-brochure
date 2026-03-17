@@ -1,0 +1,13 @@
+[
+    {
+        "Titre": "Suivi - Partenaires",
+        "Link_Annonceur": "1 (ID Annonceur)",
+        "Pack_Choisi": "Logo Affiche",
+        "Logo_Recu": false,
+        "Type_Paiement": "Virement",
+        "Email_Contact": "contact@exemple.com",
+        "Type_Preuve": "Facture",
+        "Preuve_Paiement_Transmise": false,
+        "Commentaires": "Exemple de commentaire"
+    }
+]

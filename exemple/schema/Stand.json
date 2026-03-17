@@ -1,0 +1,14 @@
+[
+    {
+        "Titre": "Suivi - Stand",
+        "Link_Annonceur": "1 (ID Annonceur)",
+        "Besoin_Electricite": true,
+        "Nombre_Tables": 1,
+        "Nombre_Chaises": 2,
+        "Type_Paiement": "Virement",
+        "Email_Contact": "contact@exemple.com",
+        "Type_Preuve": "Facture",
+        "Preuve_Paiement_Transmise": false,
+        "Commentaires": "Exemple de commentaire"
+    }
+]

@@ -1,0 +1,10 @@
+[
+    {
+        "Titre": "Suivi - Tombola",
+        "Link_Annonceur": "1 (ID Annonceur)",
+        "Description_Lot": "Panier Garni",
+        "Lot_Recupere": false,
+        "Email_Contact": "contact@exemple.com",
+        "Commentaires": "Exemple de commentaire"
+    }
+]
