@@ -60,27 +60,37 @@ export const deleteLocation = async (id) => {
   }
 };
 
-// Parse GPS coords from Comments field: [GPS:lat,lng]
-export const parseGPS = (comments) => {
-  if (!comments) return null;
-  const match = comments.match(/\[GPS:([-\d.]+),([-\d.]+)\]/);
-  if (match) {
-    return { lat: parseFloat(match[1]), lng: parseFloat(match[2]) };
+// Parse GPS coords from location object
+// Priorité : champ dédié 'gps' ("lat;lng") > ancien format Comments [GPS:lat,lng]
+export const parseGPS = (loc) => {
+  if (!loc) return null;
+
+  // Nouveau format : champ dédié gps ("lat;lng" ou "lat,lng")
+  if (loc.gps) {
+    const sep = loc.gps.includes(';') ? ';' : ',';
+    const parts = loc.gps.split(sep);
+    if (parts.length === 2) {
+      const lat = parseFloat(parts[0]);
+      const lng = parseFloat(parts[1]);
+      if (!isNaN(lat) && !isNaN(lng)) return { lat, lng };
+    }
   }
+
+  // Rétrocompatibilité : ancien format Comments [GPS:lat,lng]
+  if (loc.Comments) {
+    const match = loc.Comments.match(/\[GPS:([-\d.]+),([-\d.]+)\]/);
+    if (match) {
+      return { lat: parseFloat(match[1]), lng: parseFloat(match[2]) };
+    }
+  }
+
   return null;
 };
 
-// Strip GPS tag from Comments for display
+// Strip GPS tag from Comments for display (rétrocompatibilité)
 export const stripGPS = (comments) => {
   if (!comments) return '';
   return comments.replace(/\[GPS:[-\d.,]+\]\n?/, '').trim();
-};
-
-// Build Comments with GPS tag
-export const buildComments = (gps, existingComments) => {
-  const base = `[GPS:${gps.lat.toFixed(6)},${gps.lng.toFixed(6)}]`;
-  const existing = existingComments ? stripGPS(existingComments) : '';
-  return existing ? `${base}\n${existing}` : base;
 };
 
 // Add a timestamped comment
@@ -90,10 +100,57 @@ export const addComment = (existingComments, newComment) => {
     day: '2-digit', month: '2-digit', year: 'numeric',
     hour: '2-digit', minute: '2-digit'
   });
-  const gpsMatch = existingComments ? existingComments.match(/\[GPS:[-\d.,]+\]/) : null;
-  const gpsTag = gpsMatch ? gpsMatch[0] : '';
   const stripped = stripGPS(existingComments);
   const commentLine = `[${timestamp}] ${newComment}`;
-  const parts = [stripped, commentLine].filter(Boolean).join('\n');
-  return gpsTag ? `${gpsTag}\n${parts}` : parts;
+  return stripped ? `${stripped}\n${commentLine}` : commentLine;
+};
+
+// Reverse geocoding via Nominatim (OpenStreetMap)
+export const reverseGeocode = async (lat, lng) => {
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+    );
+    const data = await response.json();
+    if (data && data.address) {
+      const addr = data.address;
+      const parts = [
+        addr.house_number ? `${addr.house_number} ${addr.road || ''}` : (addr.road || ''),
+        addr.postcode,
+        addr.city || addr.town || addr.village || addr.municipality || ''
+      ].filter(Boolean);
+      return parts.join(', ');
+    }
+  } catch (error) {
+    console.error('Reverse geocoding error:', error);
+  }
+  return '';
+};
+
+// Lieux à proximité via Overpass API (OpenStreetMap)
+export const fetchNearbyPlaces = async (lat, lng, radius = 50) => {
+  try {
+    const query = `
+      [out:json];
+      (
+        node(around:${radius},${lat},${lng})["name"];
+        way(around:${radius},${lat},${lng})["name"];
+      );
+      out center;
+    `;
+    const response = await fetch(
+      `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`
+    );
+    const data = await response.json();
+    return (data.elements || []).filter(el => {
+      if (!el.tags || !el.tags.name) return false;
+      const { amenity, shop, tourism, leisure, craft, office } = el.tags;
+      if (!amenity && !shop && !tourism && !leisure && !craft && !office) return false;
+      if (amenity === 'parking') return false;
+      return true;
+    });
+  } catch (error) {
+    console.error('Erreur fetchNearbyPlaces:', error);
+    return [];
+  }
 };
