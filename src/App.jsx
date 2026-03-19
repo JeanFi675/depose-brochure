@@ -101,6 +101,7 @@ const App = () => {
         title: data.title,
         address: data.address,
         gps: gpsStr,
+        referent: data.referent || undefined,
         Comments: `[${timestamp}] Création du lieu`
       });
       setPendingGPS(null);
@@ -280,6 +281,7 @@ const App = () => {
           onClose={closeModal}
           onSave={handleSave}
           onDelete={handleDelete}
+          referents={[...new Set(locations.map(l => l.referent).filter(Boolean))].sort()}
         />
       )}
     </div>

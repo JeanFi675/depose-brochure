@@ -7,6 +7,7 @@ Ce fichier fournit le contexte nécessaire pour travailler efficacement sur ce p
 Application web React de gestion de **points de dépôt de brochures**. Les utilisateurs peuvent :
 - Voir les points de dépôt sur une carte (Leaflet / OpenStreetMap)
 - Ajouter des lieux en cliquant sur la carte
+- Assigner un référent à chaque lieu
 - Ajouter des commentaires horodatés sur chaque lieu
 - Rechercher des lieux par nom/adresse
 
@@ -26,7 +27,7 @@ Application web React de gestion de **points de dépôt de brochures**. Les util
 | `src/App.jsx` | État global, orchestration — tout passe par ici |
 | `src/services/api.js` | Tous les appels réseau (NocoDB, Nominatim, Overpass) |
 | `src/components/Map.jsx` | Carte Leaflet, marqueurs, mode ajout |
-| `src/components/LocationModal.jsx` | Formulaire add/edit, commentaires |
+| `src/components/LocationModal.jsx` | Formulaire add/edit, commentaires, sélection référent |
 | `src/components/PlaceSelectorModal.jsx` | Sélecteur POI (étape 1 de la création) |
 | `src/index.css` | Design system complet — variables CSS, layout, composants |
 | `vite.config.js` | `base: '/depose-brochures/'` — important pour les chemins |
@@ -61,6 +62,7 @@ Id (int, PK auto)
 title (text, requis)
 address (text, optionnel)
 gps (text, format "lat;lng", optionnel)
+referent (text, optionnel)
 Comments (text long, optionnel)
 ```
 
@@ -71,6 +73,14 @@ Comments (text long, optionnel)
 ```
 
 Utiliser la fonction `addComment(existing, newText)` de `api.js` pour ajouter un commentaire.
+
+## Référents
+
+Le champ `referent` associe une personne à un lieu de dépôt.
+
+- `LocationModal` reçoit la prop `referents` : liste triée des valeurs uniques du champ `referent` de toutes les locations existantes (calculée dans `App.jsx`)
+- L'UI propose un `<select>` avec les référents existants + un bouton "**+ Nouveau**" qui bascule vers un champ texte libre
+- La valeur est envoyée à NocoDB via `createLocation` (mode add) ou `updateLocation` (mode edit)
 
 ## Format GPS
 
@@ -95,7 +105,7 @@ La création se fait en **2 étapes** :
 
 1. User clique [+] → clique sur la carte → `PlaceSelectorModal` s'ouvre avec les POI Overpass
 2. User sélectionne POI (pré-remplit le formulaire) OU clique "Pas dans la liste" (formulaire vide + géocodage inverse auto)
-3. `LocationModal` s'ouvre en mode `'add'`
+3. `LocationModal` s'ouvre en mode `'add'` avec sélection du référent
 4. User sauvegarde → `handleSave()` → `createLocation()` → `loadLocations()`
 
 Ne pas court-circuiter ce flux sans raison — il réduit la saisie manuelle.

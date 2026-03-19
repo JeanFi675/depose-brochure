@@ -12,13 +12,16 @@ const parseComments = (comments) => {
   });
 };
 
-const LocationModal = ({ location, gps, prefill, onClose, onSave, onDelete, mode }) => {
+const LocationModal = ({ location, gps, prefill, onClose, onSave, onDelete, mode, referents = [] }) => {
   const isEdit = mode === 'edit';
   const isView = mode === 'view';
   const isAdd = mode === 'add';
 
   const [title, setTitle] = useState(prefill?.title || location?.title || '');
   const [address, setAddress] = useState(prefill?.address || location?.address || '');
+  const [referent, setReferent] = useState(location?.referent || '');
+  const [addingReferent, setAddingReferent] = useState(false);
+  const [newReferentName, setNewReferentName] = useState('');
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -27,6 +30,9 @@ const LocationModal = ({ location, gps, prefill, onClose, onSave, onDelete, mode
   useEffect(() => {
     setTitle(prefill?.title || location?.title || '');
     setAddress(prefill?.address || location?.address || '');
+    setReferent(location?.referent || '');
+    setAddingReferent(false);
+    setNewReferentName('');
     setNewComment('');
     setConfirmDelete(false);
   }, [location, prefill]);
@@ -44,11 +50,13 @@ const LocationModal = ({ location, gps, prefill, onClose, onSave, onDelete, mode
 
   const comments = parseComments(location?.Comments);
 
+  const effectiveReferent = addingReferent ? newReferentName.trim() : referent;
+
   const handleSave = async () => {
     if (!title.trim()) return;
     setLoading(true);
     try {
-      await onSave({ title: title.trim(), address: address.trim() });
+      await onSave({ title: title.trim(), address: address.trim(), referent: effectiveReferent });
     } finally {
       setLoading(false);
     }
@@ -139,6 +147,53 @@ const LocationModal = ({ location, gps, prefill, onClose, onSave, onDelete, mode
                 onChange={(e) => setAddress(e.target.value)}
                 placeholder="Ex: 12 rue de la Mairie, 74800..."
               />
+            )}
+          </div>
+
+          {/* Referent */}
+          <div className="form-group">
+            <label>Référent</label>
+            {isView ? (
+              <div style={{ fontSize: '0.9rem', color: '#444' }}>{location?.referent || '—'}</div>
+            ) : addingReferent ? (
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <input
+                  type="text"
+                  value={newReferentName}
+                  onChange={(e) => setNewReferentName(e.target.value)}
+                  placeholder="Nom du référent"
+                  autoFocus
+                  style={{ flex: 1 }}
+                />
+                <button
+                  type="button"
+                  onClick={() => { setAddingReferent(false); setNewReferentName(''); }}
+                  style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}
+                >
+                  Annuler
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <select
+                  value={referent}
+                  onChange={(e) => setReferent(e.target.value)}
+                  style={{ flex: 1 }}
+                >
+                  <option value="">— Aucun référent —</option>
+                  {referents.map(r => (
+                    <option key={r} value={r}>{r}</option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={() => setAddingReferent(true)}
+                  className="btn-sm"
+                  style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}
+                >
+                  + Nouveau
+                </button>
+              </div>
             )}
           </div>
 
