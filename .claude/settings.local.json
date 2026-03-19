@@ -3,7 +3,10 @@
     "allow": [
       "Bash(npm install:*)",
       "Bash(npm run:*)",
-      "Bash(grep -E '\\\\.\\(md|txt|env|config|json\\)$')"
+      "Bash(grep -E '\\\\.\\(md|txt|env|config|json\\)$')",
+      "Bash(curl -s https://jeanfi675.github.io/depose-brochure/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://jeanfi675.github.io/depose-brochure/assets/index-Bm__UEql.js\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://jeanfi675.github.io/depose-brochure/assets/index-BsQn4qhw.css\")"
     ]
   }
 }

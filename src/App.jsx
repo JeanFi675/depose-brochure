@@ -185,7 +185,8 @@ const App = () => {
             onClick={() => setPanelCollapsed(v => !v)}
             title={panelCollapsed ? 'Afficher la liste' : 'Réduire'}
           >
-            {panelCollapsed ? '▲' : '▼'}
+            <span className="panel-toggle-mobile">{panelCollapsed ? '▲' : '▼'}</span>
+            <span className="panel-toggle-desktop">{panelCollapsed ? '▶' : '◀'}</span>
           </button>
         </div>
 

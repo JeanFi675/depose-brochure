@@ -165,6 +165,10 @@ textarea {
   font-size: 0.9rem;
 }
 
+.panel-toggle-desktop {
+  display: none;
+}
+
 .panel-toggle {
   background: none;
   border: none;
@@ -468,6 +472,23 @@ textarea {
     height: 100dvh;
     width: 48px;
     overflow: hidden;
+  }
+
+  .bottom-panel.collapsed .panel-header {
+    padding: 8px 0;
+    justify-content: center;
+  }
+
+  .bottom-panel.collapsed .panel-header h2 {
+    display: none;
+  }
+
+  .panel-toggle-mobile {
+    display: none;
+  }
+
+  .panel-toggle-desktop {
+    display: inline;
   }
 
   .panel-header {
