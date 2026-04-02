@@ -23,3 +23,9 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# Données sensibles partenaires (ne pas diffuser sur GitHub)
+FJD2026*.json
+
+# Paramètres locaux Claude Code (chemins machine, permissions)
+.claude/settings.local.json
