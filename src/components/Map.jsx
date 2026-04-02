@@ -29,6 +29,10 @@ const createIcon = (color = '#8bbfd5') => L.divIcon({
 
 const defaultIcon = createIcon('#8bbfd5');
 const activeIcon = createIcon('#f0c040');
+// Partenaire : brochure non déposée → contour noir, fond transparent
+const partnerIcon = createIcon('transparent');
+// Partenaire : brochure déposée → bleu
+const partnerDeposedIcon = createIcon('#4a90d9');
 
 // Component to handle map clicks in add mode
 const MapClickHandler = ({ addMode, onMapClick }) => {
@@ -128,7 +132,14 @@ const Map = ({ locations, addMode, setAddMode, onMapClick, selectedId, onSelectL
         {locations.map(loc => {
           const gps = parseGPS(loc);
           if (!gps) return null;
-          const icon = loc.Id === selectedId ? activeIcon : defaultIcon;
+          let icon;
+          if (loc.Id === selectedId) {
+            icon = activeIcon;
+          } else if (loc.Partenaire) {
+            icon = loc.BrochureDeposee ? partnerDeposedIcon : partnerIcon;
+          } else {
+            icon = defaultIcon;
+          }
           const comments = stripGPS(loc.Comments);
 
           return (

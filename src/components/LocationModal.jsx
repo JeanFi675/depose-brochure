@@ -20,6 +20,7 @@ const LocationModal = ({ location, gps, prefill, onClose, onSave, onDelete, mode
   const [title, setTitle] = useState(prefill?.title || location?.title || '');
   const [address, setAddress] = useState(prefill?.address || location?.address || '');
   const [referent, setReferent] = useState(location?.referent || '');
+  const [brochureDeposee, setBrochureDeposee] = useState(!!location?.BrochureDeposee);
   const [addingReferent, setAddingReferent] = useState(false);
   const [newReferentName, setNewReferentName] = useState('');
   const [newComment, setNewComment] = useState('');
@@ -31,6 +32,7 @@ const LocationModal = ({ location, gps, prefill, onClose, onSave, onDelete, mode
     setTitle(prefill?.title || location?.title || '');
     setAddress(prefill?.address || location?.address || '');
     setReferent(location?.referent || '');
+    setBrochureDeposee(!!location?.BrochureDeposee);
     setAddingReferent(false);
     setNewReferentName('');
     setNewComment('');
@@ -56,7 +58,9 @@ const LocationModal = ({ location, gps, prefill, onClose, onSave, onDelete, mode
     if (!title.trim()) return;
     setLoading(true);
     try {
-      await onSave({ title: title.trim(), address: address.trim(), referent: effectiveReferent });
+      const saveData = { title: title.trim(), address: address.trim(), referent: effectiveReferent };
+      if (location?.Partenaire) saveData.BrochureDeposee = brochureDeposee;
+      await onSave(saveData);
     } finally {
       setLoading(false);
     }
@@ -196,6 +200,42 @@ const LocationModal = ({ location, gps, prefill, onClose, onSave, onDelete, mode
               </div>
             )}
           </div>
+
+          {/* Brochure déposée — partenaires uniquement */}
+          {location?.Partenaire && !isAdd && (
+            <div className="form-group">
+              <label>Statut brochure</label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: isView ? 'default' : 'pointer', userSelect: 'none' }}>
+                <div
+                  onClick={() => !isView && setBrochureDeposee(v => !v)}
+                  style={{
+                    width: '44px', height: '24px',
+                    borderRadius: '12px',
+                    border: '2px solid #000',
+                    backgroundColor: brochureDeposee ? '#4a90d9' : '#ddd',
+                    position: 'relative',
+                    transition: 'background-color 0.2s',
+                    flexShrink: 0,
+                    cursor: isView ? 'default' : 'pointer',
+                  }}
+                >
+                  <div style={{
+                    width: '16px', height: '16px',
+                    borderRadius: '50%',
+                    backgroundColor: '#fff',
+                    border: '2px solid #000',
+                    position: 'absolute',
+                    top: '2px',
+                    left: brochureDeposee ? '22px' : '2px',
+                    transition: 'left 0.2s',
+                  }} />
+                </div>
+                <span style={{ fontWeight: '700', fontSize: '0.9rem' }}>
+                  {brochureDeposee ? '✓ Brochure déposée' : 'Brochure non déposée'}
+                </span>
+              </label>
+            </div>
+          )}
 
           {/* Comments (view/edit mode) */}
           {(isView || isEdit) && (
