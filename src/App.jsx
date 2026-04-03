@@ -152,7 +152,7 @@ const App = () => {
 
   if (!isAuthenticated) return <Login onLogin={handleLogin} />;
 
-  const totalWithGPS = locations.filter(l => parseGPS(l)).length;
+  const totalDeposes = locations.filter(l => l.BrochureDeposee).length;
 
   const navItems = [
     { id: 'map', label: '🗺 Carte' },
@@ -224,7 +224,7 @@ const App = () => {
 
           <div className="panel-header">
             <h2>
-              {loading ? 'Chargement...' : `${totalWithGPS} lieu${totalWithGPS !== 1 ? 'x' : ''} recensé${totalWithGPS !== 1 ? 's' : ''}`}
+              {loading ? 'Chargement...' : `${totalDeposes} brochure${totalDeposes !== 1 ? 's' : ''} déposée${totalDeposes !== 1 ? 's' : ''}`}
             </h2>
             <button
               className="panel-toggle"
