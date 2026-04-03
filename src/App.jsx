@@ -31,6 +31,7 @@ const App = () => {
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState('map'); // 'map' | 'dashboard' | 'historique'
+  const [typeFilter, setTypeFilter] = useState('all'); // 'all' | 'standard' | 'partenaire-a-deposer' | 'partenaire-deposee'
 
   const handleLogin = () => {
     sessionStorage.setItem('auth', 'true');
@@ -49,12 +50,17 @@ const App = () => {
   }, [isAuthenticated, loadLocations]);
 
   const filteredLocations = locations.filter(loc => {
-    if (!search.trim()) return true;
-    const q = search.toLowerCase();
-    return (
-      (loc.title || '').toLowerCase().includes(q) ||
-      (loc.address || '').toLowerCase().includes(q)
-    );
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      if (
+        !(loc.title || '').toLowerCase().includes(q) &&
+        !(loc.address || '').toLowerCase().includes(q)
+      ) return false;
+    }
+    if (typeFilter === 'standard') return !loc.Partenaire;
+    if (typeFilter === 'partenaire-a-deposer') return loc.Partenaire && !loc.BrochureDeposee;
+    if (typeFilter === 'partenaire-deposee') return loc.Partenaire && !!loc.BrochureDeposee;
+    return true;
   });
 
   const locationsWithGPS = filteredLocations.filter(loc => parseGPS(loc));
@@ -245,6 +251,23 @@ const App = () => {
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Rechercher un lieu..."
                 />
+              </div>
+
+              <div className="type-filter-bar">
+                {[
+                  { value: 'all', label: 'Tous' },
+                  { value: 'standard', label: 'Standard' },
+                  { value: 'partenaire-a-deposer', label: 'Partenaire — à déposer' },
+                  { value: 'partenaire-deposee', label: 'Partenaire — déposée' },
+                ].map(f => (
+                  <button
+                    key={f.value}
+                    className={`type-filter-chip${typeFilter === f.value ? ' active' : ''}`}
+                    onClick={() => setTypeFilter(f.value)}
+                  >
+                    {f.label}
+                  </button>
+                ))}
               </div>
 
               <div className="location-list">

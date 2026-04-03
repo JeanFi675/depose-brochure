@@ -196,6 +196,44 @@ textarea {
   font-size: 0.9rem;
 }
 
+.type-filter-bar {
+  display: flex;
+  gap: 6px;
+  padding: 8px 16px;
+  border-bottom: 2px solid var(--brutal-black);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.type-filter-chip {
+  font-size: 0.72rem;
+  padding: 4px 10px;
+  border: 2px solid var(--brutal-black);
+  box-shadow: 2px 2px 0px var(--brutal-black);
+  background-color: var(--brutal-white);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.type-filter-chip:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px var(--brutal-black);
+}
+
+.type-filter-chip:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px var(--brutal-black);
+}
+
+.type-filter-chip.active {
+  background-color: var(--brutal-black);
+  color: var(--brutal-white);
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px var(--brutal-black);
+}
+
 .location-list {
   overflow-y: auto;
   flex: 1;
