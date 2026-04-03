@@ -224,7 +224,7 @@ const App = () => {
 
           <div className="panel-header">
             <h2>
-              {loading ? 'Chargement...' : `${totalDeposes} brochure${totalDeposes !== 1 ? 's' : ''} déposée${totalDeposes !== 1 ? 's' : ''}`}
+              {loading ? 'Chargement...' : `${totalDeposes} point${totalDeposes !== 1 ? 's' : ''} de dépôt`}
             </h2>
             <button
               className="panel-toggle"
