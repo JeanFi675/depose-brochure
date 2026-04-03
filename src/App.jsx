@@ -3,6 +3,8 @@ import Login from './components/Login.jsx';
 import Map from './components/Map.jsx';
 import LocationModal from './components/LocationModal.jsx';
 import PlaceSelectorModal from './components/PlaceSelectorModal.jsx';
+import Dashboard from './components/Dashboard.jsx';
+import Historique from './components/Historique.jsx';
 import {
   fetchLocations,
   createLocation,
@@ -28,6 +30,7 @@ const App = () => {
   const [flyTarget, setFlyTarget] = useState(null);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState('map'); // 'map' | 'dashboard' | 'historique'
 
   const handleLogin = () => {
     sessionStorage.setItem('auth', 'true');
@@ -102,6 +105,7 @@ const App = () => {
         address: data.address,
         gps: gpsStr,
         referent: data.referent || undefined,
+        BrochureDeposee: true,
         Comments: `[${timestamp}] Création du lieu`
       });
       setPendingGPS(null);
@@ -150,116 +154,159 @@ const App = () => {
 
   const totalWithGPS = locations.filter(l => parseGPS(l)).length;
 
+  const navItems = [
+    { id: 'map', label: '🗺 Carte' },
+    { id: 'dashboard', label: '📊 Dashboard' },
+    { id: 'historique', label: '📋 Historique' },
+  ];
+
   return (
-    <div className="app-container">
-      {/* Mobile top bar */}
+    <div className={`app-container page-${currentPage}`}>
+      {/* Top bar — always visible on mobile, visible on desktop only for non-map pages */}
       <div className="top-bar">
         <h1>Dépôt Brochures</h1>
+        <nav className="top-bar-nav">
+          {navItems.map(item => (
+            <button
+              key={item.id}
+              className={`nav-btn${currentPage === item.id ? ' nav-btn-active' : ''}`}
+              onClick={() => setCurrentPage(item.id)}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
       </div>
 
-      {/* Map */}
-      <div className={`map-wrapper${addMode ? ' add-mode' : ''}`}>
-        <Map
-          locations={filteredLocations}
-          addMode={addMode}
-          setAddMode={setAddMode}
-          onMapClick={handleMapClick}
-          selectedId={selectedId}
-          onSelectLocation={handleSelectLocation}
-          onEditLocation={handleEditLocation}
-          flyTarget={flyTarget}
-        />
-      </div>
+      {/* Dashboard page */}
+      {currentPage === 'dashboard' && (
+        <Dashboard locations={locations} />
+      )}
 
-      {/* Sidebar / bottom panel */}
-      <div className={`bottom-panel${panelCollapsed ? ' collapsed' : ''}`}>
-        <div className="desktop-sidebar-header">
-          <h1>Dépôt Brochures</h1>
-        </div>
+      {/* Historique page */}
+      {currentPage === 'historique' && (
+        <Historique locations={locations} />
+      )}
 
-        <div className="panel-header">
-          <h2>
-            {loading ? 'Chargement...' : `${totalWithGPS} lieu${totalWithGPS !== 1 ? 'x' : ''} recensé${totalWithGPS !== 1 ? 's' : ''}`}
-          </h2>
-          <button
-            className="panel-toggle"
-            onClick={() => setPanelCollapsed(v => !v)}
-            title={panelCollapsed ? 'Afficher la liste' : 'Réduire'}
-          >
-            <span className="panel-toggle-mobile">{panelCollapsed ? '▲' : '▼'}</span>
-            <span className="panel-toggle-desktop">{panelCollapsed ? '▶' : '◀'}</span>
-          </button>
-        </div>
+      {/* Map page */}
+      {currentPage === 'map' && (
+        <>
+          {/* Map */}
+          <div className={`map-wrapper${addMode ? ' add-mode' : ''}`}>
+            <Map
+              locations={filteredLocations}
+              addMode={addMode}
+              setAddMode={setAddMode}
+              onMapClick={handleMapClick}
+              selectedId={selectedId}
+              onSelectLocation={handleSelectLocation}
+              onEditLocation={handleEditLocation}
+              flyTarget={flyTarget}
+            />
+          </div>
 
-        {!panelCollapsed && (
-          <>
-            <div className="search-box">
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Rechercher un lieu..."
-              />
+          {/* Sidebar / bottom panel */}
+          <div className={`bottom-panel${panelCollapsed ? ' collapsed' : ''}`}>
+            <div className="desktop-sidebar-header">
+              <h1>Dépôt Brochures</h1>
+              <nav className="sidebar-nav">
+                {navItems.map(item => (
+                  <button
+                    key={item.id}
+                    className={`nav-btn${currentPage === item.id ? ' nav-btn-active' : ''}`}
+                    onClick={() => setCurrentPage(item.id)}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </nav>
             </div>
 
-            <div className="location-list">
-              {filteredLocations.length === 0 && (
-                <div className="empty-state">
-                  {search ? 'Aucun résultat' : 'Aucun lieu enregistré'}
-                </div>
-              )}
+          <div className="panel-header">
+            <h2>
+              {loading ? 'Chargement...' : `${totalWithGPS} lieu${totalWithGPS !== 1 ? 'x' : ''} recensé${totalWithGPS !== 1 ? 's' : ''}`}
+            </h2>
+            <button
+              className="panel-toggle"
+              onClick={() => setPanelCollapsed(v => !v)}
+              title={panelCollapsed ? 'Afficher la liste' : 'Réduire'}
+            >
+              <span className="panel-toggle-mobile">{panelCollapsed ? '▲' : '▼'}</span>
+              <span className="panel-toggle-desktop">{panelCollapsed ? '▶' : '◀'}</span>
+            </button>
+          </div>
 
-              {locationsWithGPS.map(loc => (
-                <div
-                  key={loc.Id}
-                  className={`location-item${selectedId === loc.Id ? ' active' : ''}`}
-                  onClick={() => handleListItemClick(loc)}
-                >
-                  <div className="location-dot" />
-                  <div className="location-info">
-                    <div className="location-name">{loc.title}</div>
-                    {loc.address && <div className="location-address">{loc.address}</div>}
+          {!panelCollapsed && (
+            <>
+              <div className="search-box">
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Rechercher un lieu..."
+                />
+              </div>
+
+              <div className="location-list">
+                {filteredLocations.length === 0 && (
+                  <div className="empty-state">
+                    {search ? 'Aucun résultat' : 'Aucun lieu enregistré'}
                   </div>
-                </div>
-              ))}
+                )}
 
-              {locationsWithoutGPS.length > 0 && (
-                <>
-                  {locationsWithGPS.length > 0 && (
-                    <div style={{
-                      padding: '8px 16px',
-                      fontSize: '0.75rem',
-                      fontWeight: '700',
-                      textTransform: 'uppercase',
-                      color: '#888',
-                      borderTop: '2px solid var(--brutal-bg)',
-                      backgroundColor: 'var(--brutal-bg)'
-                    }}>
-                      Sans position GPS
+                {locationsWithGPS.map(loc => (
+                  <div
+                    key={loc.Id}
+                    className={`location-item${selectedId === loc.Id ? ' active' : ''}`}
+                    onClick={() => handleListItemClick(loc)}
+                  >
+                    <div className="location-dot" />
+                    <div className="location-info">
+                      <div className="location-name">{loc.title}</div>
+                      {loc.address && <div className="location-address">{loc.address}</div>}
                     </div>
-                  )}
-                  {locationsWithoutGPS.map(loc => (
-                    <div
-                      key={loc.Id}
-                      className={`location-item no-gps${selectedId === loc.Id ? ' active' : ''}`}
-                      onClick={() => {
-                        setSelectedId(loc.Id);
-                        setModal({ mode: 'edit', location: loc });
-                      }}
-                    >
-                      <div className="location-dot" />
-                      <div className="location-info">
-                        <div className="location-name">{loc.title}</div>
-                        {loc.address && <div className="location-address">{loc.address}</div>}
+                  </div>
+                ))}
+
+                {locationsWithoutGPS.length > 0 && (
+                  <>
+                    {locationsWithGPS.length > 0 && (
+                      <div style={{
+                        padding: '8px 16px',
+                        fontSize: '0.75rem',
+                        fontWeight: '700',
+                        textTransform: 'uppercase',
+                        color: '#888',
+                        borderTop: '2px solid var(--brutal-bg)',
+                        backgroundColor: 'var(--brutal-bg)'
+                      }}>
+                        Sans position GPS
                       </div>
-                    </div>
-                  ))}
-                </>
-              )}
-            </div>
-          </>
-        )}
-      </div>
+                    )}
+                    {locationsWithoutGPS.map(loc => (
+                      <div
+                        key={loc.Id}
+                        className={`location-item no-gps${selectedId === loc.Id ? ' active' : ''}`}
+                        onClick={() => {
+                          setSelectedId(loc.Id);
+                          setModal({ mode: 'edit', location: loc });
+                        }}
+                      >
+                        <div className="location-dot" />
+                        <div className="location-info">
+                          <div className="location-name">{loc.title}</div>
+                          {loc.address && <div className="location-address">{loc.address}</div>}
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+        </>
+      )}
 
       {/* Étape 1 : sélecteur de POI */}
       {showPlaceSelector && (

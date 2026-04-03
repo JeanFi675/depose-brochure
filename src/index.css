@@ -451,8 +451,15 @@ textarea {
     flex-direction: row;
   }
 
-  .top-bar {
+  /* Hide top-bar on desktop only for the map page (sidebar handles nav there) */
+  .app-container.page-map .top-bar {
     display: none;
+  }
+
+  /* For non-map pages, keep the top-bar visible on desktop */
+  .app-container:not(.page-map) .top-bar {
+    display: flex;
+    border-right: none;
   }
 
   .map-wrapper {
@@ -522,4 +529,386 @@ textarea {
 .leaflet-container {
   height: 100% !important;
   width: 100% !important;
+}
+
+/* ─── Navigation ─────────────────────────────────────────────── */
+
+.top-bar-nav {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.nav-btn {
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  box-shadow: 2px 2px 0px var(--brutal-black);
+  background: var(--brutal-white);
+  white-space: nowrap;
+}
+
+.nav-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px var(--brutal-black);
+}
+
+.nav-btn-active {
+  background-color: var(--brutal-black);
+  color: var(--brutal-white);
+}
+
+.nav-btn-active:hover {
+  background-color: var(--brutal-black);
+  color: var(--brutal-white);
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding-top: 10px;
+}
+
+.sidebar-nav .nav-btn {
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+}
+
+/* ─── Dashboard & Historique shared layout ───────────────────── */
+
+.dashboard-page,
+.historique-page {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  background-color: var(--brutal-bg);
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: var(--brutal-border);
+}
+
+.dashboard-header h1 {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.dashboard-subtitle {
+  margin: 6px 0 0;
+  font-size: 0.85rem;
+  color: #555;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.dashboard-empty {
+  padding: 32px;
+  text-align: center;
+  color: #888;
+  font-size: 0.9rem;
+  border: 2px dashed #ccc;
+  margin-top: 16px;
+}
+
+/* ─── KPI Cards ──────────────────────────────────────────────── */
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.kpi-card {
+  background-color: var(--brutal-white);
+  border: var(--brutal-border);
+  box-shadow: var(--brutal-shadow);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.kpi-icon {
+  font-size: 1.4rem;
+  margin-bottom: 4px;
+}
+
+.kpi-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #555;
+}
+
+.kpi-value {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 2.2rem;
+  line-height: 1;
+  letter-spacing: -1px;
+  border-bottom: 2px solid var(--brutal-black);
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+}
+
+.kpi-sub {
+  font-size: 0.78rem;
+  color: #555;
+  font-weight: 600;
+}
+
+/* ─── Leaderboard ────────────────────────────────────────────── */
+
+.leaderboard-section h2 {
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+  padding: 10px 16px;
+  background-color: var(--brutal-black);
+  color: var(--brutal-white);
+  display: inline-block;
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.leaderboard-item {
+  background-color: var(--brutal-white);
+  border: var(--brutal-border);
+  box-shadow: var(--brutal-shadow);
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+}
+
+.leaderboard-item.lb-first {
+  border-width: 3px;
+  box-shadow: 6px 6px 0px var(--brutal-black);
+}
+
+.lb-rank {
+  background-color: var(--brutal-black);
+  color: var(--brutal-white);
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 1.1rem;
+  min-width: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  letter-spacing: -1px;
+}
+
+.lb-first .lb-rank {
+  background-color: var(--brutal-black);
+  font-size: 1.3rem;
+}
+
+.lb-body {
+  flex: 1;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lb-top-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.lb-name {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 0.95rem;
+  letter-spacing: -0.5px;
+}
+
+.lb-score {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 1rem;
+  background-color: var(--brutal-black);
+  color: var(--brutal-white);
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.lb-score-max {
+  font-size: 0.75rem;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+.lb-progress-track {
+  height: 8px;
+  background-color: var(--brutal-bg);
+  border: 2px solid var(--brutal-black);
+  position: relative;
+}
+
+.lb-progress-fill {
+  height: 100%;
+  background-color: var(--brutal-black);
+  transition: width 0.4s ease;
+}
+
+.lb-stats-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.lb-stat {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border: 2px solid var(--brutal-black);
+}
+
+.lb-stat-signed {
+  background-color: var(--brutal-green);
+}
+
+.lb-stat-refused {
+  background-color: #ffb3b3;
+}
+
+.lb-stat-lieux {
+  background-color: var(--brutal-bg);
+  margin-left: auto;
+}
+
+/* ─── Historique ─────────────────────────────────────────────── */
+
+.histo-total {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 1.1rem;
+  background-color: var(--brutal-black);
+  color: var(--brutal-white);
+  padding: 4px 14px;
+  align-self: center;
+}
+
+.histo-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.histo-day-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.histo-day-label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: var(--brutal-black);
+  color: var(--brutal-white);
+  padding: 4px 12px;
+  display: inline-block;
+  align-self: flex-start;
+}
+
+.histo-entry {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background-color: var(--brutal-white);
+  border: var(--brutal-border);
+  box-shadow: 3px 3px 0px var(--brutal-black);
+  padding: 10px 14px;
+}
+
+.histo-time {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 0.8rem;
+  color: #555;
+  min-width: 44px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.histo-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.histo-text {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.histo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.histo-location {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  background-color: var(--brutal-ice);
+  border: 2px solid var(--brutal-black);
+}
+
+.histo-referent {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  background-color: var(--brutal-black);
+  color: var(--brutal-white);
+}
+
+.histo-address {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+/* ─── Desktop overrides for Dashboard / Historique ───────────── */
+
+@media (min-width: 768px) {
+  /* On non-map pages: stack vertically (top-bar + full-width page content) */
+  .app-container:not(.page-map) {
+    flex-direction: column;
+  }
+
+  .dashboard-page,
+  .historique-page {
+    padding: 32px 40px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 2rem;
+  }
 }
