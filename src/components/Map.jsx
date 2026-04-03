@@ -115,7 +115,7 @@ const Map = ({ locations, addMode, setAddMode, onMapClick, selectedId, onSelectL
   return (
     <div style={{ height: '100%', width: '100%', position: 'relative' }}>
       <MapContainer
-        center={[45.992, 6.327]}
+        center={[46.04, 6.37]}
         zoom={12}
         style={{ height: '100%', width: '100%', cursor: addMode ? 'crosshair' : 'grab' }}
         zoomControl={true}
