@@ -227,6 +227,41 @@ const Map = ({ locations, addMode, setAddMode, onMapClick, selectedId, onSelectL
         {addMode ? '×' : '+'}
       </button>
 
+      {/* Légende */}
+      <div style={{
+        position: 'absolute',
+        bottom: '30px',
+        left: '10px',
+        zIndex: 1000,
+        backgroundColor: 'white',
+        padding: '10px 12px',
+        border: '2px solid black',
+        boxShadow: '3px 3px 0px black',
+        fontSize: '0.8rem',
+        fontFamily: 'Space Grotesk, sans-serif',
+        fontWeight: '600',
+      }}>
+        {[
+          { color: '#8bbfd5', label: 'Lieu standard' },
+          { color: 'transparent', label: 'Partenaire (brochure à déposer)', border: true },
+          { color: '#4a90d9', label: 'Partenaire (brochure déposée)' },
+          { color: '#f0c040', label: 'Sélectionné' },
+        ].map(({ color, label, border }) => (
+          <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '5px' }}>
+            <div style={{
+              width: '14px',
+              height: '14px',
+              backgroundColor: color,
+              border: '2px solid #000',
+              borderRadius: '50% 50% 50% 0',
+              transform: 'rotate(-45deg)',
+              flexShrink: 0,
+            }} />
+            <span>{label}</span>
+          </div>
+        ))}
+      </div>
+
       {/* Tooltip en mode ajout */}
       {addMode && (
         <div style={{
