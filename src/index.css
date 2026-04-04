@@ -822,6 +822,90 @@ textarea {
   align-items: center;
 }
 
+/* ─── Classement — intro grid (KPI + explication côte à côte) ─── */
+
+.classement-intro-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+@media (min-width: 768px) {
+  .classement-intro-grid {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .classement-intro-grid .kpi-card {
+    flex: 0 0 180px;
+  }
+
+  .classement-intro-grid .classement-explication {
+    flex: 1;
+  }
+}
+
+.classement-explication {
+  background-color: var(--brutal-white);
+  border: var(--brutal-border);
+  box-shadow: var(--brutal-shadow);
+  padding: 16px 20px;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.classement-explication-titre {
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin: 0 0 12px 0;
+}
+
+.classement-explication p {
+  margin: 0 0 10px 0;
+}
+
+.classement-explication p:last-child {
+  margin-bottom: 0;
+}
+
+.classement-explication-note {
+  font-style: italic;
+  opacity: 0.8;
+}
+
+/* ─── Bénévoles non éligibles ──────────────────────────────────── */
+
+.leaderboard-ineligibles {
+  margin-top: 32px;
+}
+
+.leaderboard-ineligibles h3 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.55;
+  margin-bottom: 12px;
+}
+
+.lb-rank--muted,
+.lb-name--muted,
+.lb-score--muted {
+  opacity: 0.5;
+}
+
+.lb-progress-fill--muted {
+  background-color: var(--brutal-black);
+  opacity: 0.3;
+}
+
+.leaderboard-item.lb-ineligible {
+  box-shadow: none;
+  border-style: dashed;
+  opacity: 0.7;
+}
+
 .lb-stat {
   font-size: 0.78rem;
   font-weight: 700;

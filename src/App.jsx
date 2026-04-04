@@ -3,7 +3,7 @@ import Login from './components/Login.jsx';
 import Map from './components/Map.jsx';
 import LocationModal from './components/LocationModal.jsx';
 import PlaceSelectorModal from './components/PlaceSelectorModal.jsx';
-import Dashboard from './components/Dashboard.jsx';
+import Classement from './components/Classement.jsx';
 import Historique from './components/Historique.jsx';
 import {
   fetchLocations,
@@ -30,7 +30,7 @@ const App = () => {
   const [flyTarget, setFlyTarget] = useState(null);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState('map'); // 'map' | 'dashboard' | 'historique'
+  const [currentPage, setCurrentPage] = useState('map'); // 'map' | 'classement' | 'historique'
   const [typeFilter, setTypeFilter] = useState('all'); // 'all' | 'standard' | 'partenaire-a-deposer' | 'partenaire-deposee'
 
   const handleLogin = () => {
@@ -162,7 +162,7 @@ const App = () => {
 
   const navItems = [
     { id: 'map', label: '🗺 Carte' },
-    { id: 'dashboard', label: '📊 Dashboard' },
+    { id: 'classement', label: '📊 Classement' },
     { id: 'historique', label: '📋 Historique' },
   ];
 
@@ -184,9 +184,9 @@ const App = () => {
         </nav>
       </div>
 
-      {/* Dashboard page */}
-      {currentPage === 'dashboard' && (
-        <Dashboard locations={locations} />
+      {/* Classement page */}
+      {currentPage === 'classement' && (
+        <Classement locations={locations} />
       )}
 
       {/* Historique page */}
