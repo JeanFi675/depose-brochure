@@ -60,6 +60,7 @@ const App = () => {
     if (typeFilter === 'standard') return !loc.Partenaire;
     if (typeFilter === 'partenaire-a-deposer') return loc.Partenaire && !loc.BrochureDeposee;
     if (typeFilter === 'partenaire-deposee') return loc.Partenaire && !!loc.BrochureDeposee;
+    if (typeFilter === 'deposee-sans-referent') return !!loc.BrochureDeposee && !loc.referent;
     return true;
   });
 
@@ -259,6 +260,7 @@ const App = () => {
                   { value: 'standard', label: 'Standard' },
                   { value: 'partenaire-a-deposer', label: 'Partenaire — à déposer' },
                   { value: 'partenaire-deposee', label: 'Partenaire — déposée' },
+                  { value: 'deposee-sans-referent', label: 'Déposée — sans référent' },
                 ].map(f => (
                   <button
                     key={f.value}
