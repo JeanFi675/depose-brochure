@@ -40,7 +40,7 @@ const Classement = ({ locations }) => {
         <div className="kpi-card">
           <div className="kpi-icon">📍</div>
           <div className="kpi-label">Points de dépôt</div>
-          <div className="kpi-value">{locations.length}</div>
+          <div className="kpi-value">{stats.totalDeposes}</div>
         </div>
 
         <div className="classement-explication">
