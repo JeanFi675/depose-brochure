@@ -98,7 +98,8 @@ export const addComment = (existingComments, newComment) => {
   const now = new Date();
   const timestamp = now.toLocaleString('fr-FR', {
     day: '2-digit', month: '2-digit', year: 'numeric',
-    hour: '2-digit', minute: '2-digit'
+    hour: '2-digit', minute: '2-digit',
+    timeZone: 'Europe/Paris'
   });
   const stripped = stripGPS(existingComments);
   const commentLine = `[${timestamp}] ${newComment}`;
