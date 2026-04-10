@@ -31,7 +31,7 @@ const App = () => {
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState('map'); // 'map' | 'classement' | 'historique'
-  const [typeFilter, setTypeFilter] = useState('all'); // 'all' | 'standard' | 'partenaire-a-deposer' | 'partenaire-deposee'
+  const [activeFilters, setActiveFilters] = useState(new Set()); // ensemble vide = "Tous"
 
   const handleLogin = () => {
     sessionStorage.setItem('auth', 'true');
@@ -57,11 +57,12 @@ const App = () => {
         !(loc.address || '').toLowerCase().includes(q)
       ) return false;
     }
-    if (typeFilter === 'standard') return !loc.Partenaire;
-    if (typeFilter === 'partenaire-a-deposer') return loc.Partenaire && !loc.BrochureDeposee;
-    if (typeFilter === 'partenaire-deposee') return loc.Partenaire && !!loc.BrochureDeposee;
-    if (typeFilter === 'deposee-sans-referent') return !!loc.BrochureDeposee && !loc.referent;
-    return true;
+    if (activeFilters.size === 0) return true;
+    if (activeFilters.has('standard') && !loc.Partenaire) return true;
+    if (activeFilters.has('partenaire-a-deposer') && loc.Partenaire && !loc.BrochureDeposee) return true;
+    if (activeFilters.has('partenaire-deposee') && loc.Partenaire && !!loc.BrochureDeposee) return true;
+    if (activeFilters.has('deposee-sans-referent') && !!loc.BrochureDeposee && !loc.referent) return true;
+    return false;
   });
 
   const locationsWithGPS = filteredLocations.filter(loc => parseGPS(loc));
@@ -255,8 +256,13 @@ const App = () => {
               </div>
 
               <div className="type-filter-bar">
+                <button
+                  className={`type-filter-chip${activeFilters.size === 0 ? ' active' : ''}`}
+                  onClick={() => setActiveFilters(new Set())}
+                >
+                  Tous
+                </button>
                 {[
-                  { value: 'all', label: 'Tous' },
                   { value: 'standard', label: 'Standard' },
                   { value: 'partenaire-a-deposer', label: 'Partenaire — à déposer' },
                   { value: 'partenaire-deposee', label: 'Partenaire — déposée' },
@@ -264,8 +270,13 @@ const App = () => {
                 ].map(f => (
                   <button
                     key={f.value}
-                    className={`type-filter-chip${typeFilter === f.value ? ' active' : ''}`}
-                    onClick={() => setTypeFilter(f.value)}
+                    className={`type-filter-chip${activeFilters.has(f.value) ? ' active' : ''}`}
+                    onClick={() => setActiveFilters(prev => {
+                      const next = new Set(prev);
+                      if (next.has(f.value)) next.delete(f.value);
+                      else next.add(f.value);
+                      return next;
+                    })}
                   >
                     {f.label}
                   </button>
